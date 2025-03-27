@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-center">Budgets</h1>
+<form method="POST" action="{{ url_for('add_budget') }}" class="mb-4">
+    <div class="form-row">
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+            <input type="text" name="category" class="form-control" placeholder="Category">
+        </div>
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+            <input type="text" name="amount" class="form-control" placeholder="Amount">
+        </div>
+        <div class="col-12 mt-2">
+            <button type="submit" class="btn btn-primary btn-block">Add Budget</button>
+        </div>
+    </div>
+</form>
+<div class="table-responsive">
+    <table class="table table-striped mt-4" id="budgets-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Budget Amount</th>
+                <th>Spent Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for budget in budgets %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ budget[1] }}</td>
+                <td>{{ budget[2] }}</td>
+                <td>{{ budget[3] }}</td>
+                <td>{{ 'No Budget' if budget[3] >= budget[2] else 'Within Budget' }}</td>
+                <td>
+                    <a href="{{ url_for('edit_budget', id=budget[0]) }}" class="btn btn-warning">Edit</a>
+                    <button class="btn btn-danger" onclick="deleteBudget({{ budget[0] }})">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function deleteBudget(budgetId) {
+        fetch(`/delete_budget/${budgetId}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                console.error('Failed to delete budget');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+{% endblock %}

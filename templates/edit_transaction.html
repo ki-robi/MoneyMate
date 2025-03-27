@@ -1,0 +1,33 @@
+<!-- templates/edit_transaction.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyMate - Edit Transaction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Edit Transaction</h1>
+        <form action="{{ url_for('update_transaction', id=transaction.id) }}" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="type">Transaction Type</label>
+                <select name="type" id="type" class="form-control">
+                    <option value="Income" {% if transaction.type =='Income' %}selected{% endif %}>Income</option>
+                    <option value="Expense" {% if transaction.type =='Expense' %}selected{% endif %}>Expense</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" name="category" id="category" class="form-control" value="{{ transaction.category }}">
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="text" name="amount" id="amount" class="form-control" value="{{ transaction.amount }}">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Update Transaction</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+/* static/styles.css */
+body {
+    background-color: #f8f9fa;
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.container {
+    max-width: 600px;
+    margin-top: 50px;
+}
+.card {
+    margin-top: 20px;
+}
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+.fraktur-bold {
+    font-family: 'UnifrakturMaguntia', cursive;
+}
+.emblema-one-regular {
+  font-family: "Emblema One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.custom-btn {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px 0;
+    font-size: 16px;
+    background-color: #007bff;
+}

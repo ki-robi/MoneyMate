@@ -1,0 +1,19 @@
+<!-- templates/edit_budget.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-center">Edit Budget</h1>
+<form method="POST" action="{{ url_for('edit_budget', id=budget[0]) }}" class="mb-4">
+    <div class="form-row">
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+            <input type="text" name="category" class="form-control" value="{{ budget[1] }}" placeholder="Category">
+        </div>
+        <div class="col-12 col-md-6 mb-2 mb-md-0">
+            <input type="text" name="amount" class="form-control" value="{{ budget[2] }}" placeholder="Amount">
+        </div>
+        <div class="col-12 mt-2">
+            <button type="submit" class="btn btn-primary btn-block">Update Budget</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

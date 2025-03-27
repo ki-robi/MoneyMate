@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyMate - Personal Finance Manager</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Emblema+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .logout-btn, .username-btn {
+            position: fixed;
+            top: 20px;
+            z-index: 1000;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .logout-btn {
+            right: 20px;
+            background-color: #dc3545;
+        }
+        .username-btn {
+            right: 80px;
+            background-color: #155724;
+        }
+    </style>
+</head>
+<body>
+   {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ messages }}
+            <button type="button" class="close" data-dismiss="success" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+{% endwith %}
+    <div class="container col-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="card-title"><b>MoneyMate</b></h1>
+                <h2 id="balance" class="card-subtitle mb-2 text-muted">Balance: 0.00 BDT</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form id="transaction-form" method="POST" action="{{ url_for('add_transaction') }}">
+                    <div class="form-group">
+                        <label for="type">Transaction Type</label>
+                        <select name="type" id="type" class="form-control">
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" name="category" id="category" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="text" name="amount" id="amount" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Transaction</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body text-center">
+                <a href="{{ url_for('view_transactions') }}" class="btn btn-secondary custom-btn">All Transactions</a>
+                <a href="{{ url_for('view_budgets') }}" class="btn btn-secondary custom-btn">View Budgets</a>
+                <a href="{{ url_for('chart_page') }}" class="btn btn-secondary custom-btn">Income Expense Chart</a>
+            </div>
+        </div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn btn-danger logout-btn">
+        <i class="fas fa-sign-out-alt"></i></a>
+    <a href="#" class="btn username-btn">{{ username }}</a>
+    <script>
+    setTimeout(function() {
+        var alert = document.querySelector('.alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(function() {
+                alert.remove();
+            }, 150); // Wait for the fade transition to complete
+        }
+    }, 3000);
+
+    function showAlert(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+        alertDiv.role = 'alert';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        `;
+        document.body.insertBefore(alertDiv, document.body.firstChild);
+
+        setTimeout(function() {
+            alertDiv.classList.remove('show');
+            alertDiv.classList.add('fade');
+            setTimeout(function() {
+                alertDiv.remove();
+            }, 150); // Wait for the fade transition to complete
+        }, 3000);
+    }
+
+    document.getElementById('transaction-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                showAlert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
