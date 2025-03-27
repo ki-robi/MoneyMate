@@ -66,20 +66,28 @@ def add_transaction():
     amount = request.form['amount']
 
     if not category or not amount:
-        return jsonify(success=False, message='Category and amount are required'), 400
+        return redirect(url_for('index'))
 
     try:
         amount = float(amount)
     except ValueError:
-        return jsonify(success=False, message='Invalid amount'), 400
+        return redirect(url_for('index'))
 
     balance = db.get_balance(user_id)
     if transaction_type == 'Expense' and (amount > balance or not db.check_budget(user_id, category, amount)):
         flash('Expense amount exceeds balance or budgets for this category', 'error')
-        return jsonify(success=False, message='Expense amount exceeds balance or budgets for this category'), 400
+        return redirect(url_for('index'))
 
     db.add_transaction(user_id, transaction_type, category, amount)
-    return jsonify(success=True), 204
+    return '', 204
+
+
+@app.route('/balance')
+@login_required
+def get_balance():
+    user_id = session['user_id']
+    balance = db.get_balance(user_id)
+    return jsonify(balance=balance)
 
 @app.route('/data')
 @login_required
@@ -220,4 +228,4 @@ def edit_budget(id):
 
 if __name__ == '__main__':
     db.init_db()
-    app.run(debug=True, host='192.168.0.107', port=5000)
+    app.run(debug=True)

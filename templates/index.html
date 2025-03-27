@@ -119,22 +119,24 @@
 
     document.getElementById('transaction-form').addEventListener('submit', function(event) {
         event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-
+        var form = event.target;
+        var formData = new FormData(form);
         fetch(form.action, {
-            method: 'POST',
+            method: form.method,
             body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
+        }).then(function(response) {
+            if (response.ok) {
+                fetch('/balance')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('balance').innerText = 'Balance: ' + data.balance + ' BDT';
+                        document.getElementById('category').value = '';
+                        document.getElementById('amount').value = '';
+                    });
             } else {
-                showAlert(data.message);
+                showAlert('Failed to add transaction');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        });
     });
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
